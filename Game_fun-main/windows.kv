@@ -1,0 +1,371 @@
+#:import Factory kivy.factory.Factory
+<Planet>:
+    orientation: "vertical"
+    size_hint: 0.33, 0.8
+    pos_hint: {"center": (root.pos_x, root.pos_y)}
+
+    Image:
+        size_hint: 1, 1
+        #pos_hint_x: -0.6
+        source: f"images/planet_{root.number_of_planet}_256_dark.png"
+    Label:
+        id: status
+        text: root.status
+    Label:
+        text: "Planet resources:"
+        bold: True
+    BoxLayout:
+        Image:
+            source: "images/human_Icon2.png"
+        Label:
+            id: humans
+            text: f"{root.humans}"
+    BoxLayout:
+        Image:
+            source: "images/food_Icon.png"
+        Label:
+            id: food
+            text: f"{root.food}"
+    BoxLayout:
+        Image:
+            source: "images/energy_Icon.png"
+        Label:
+            id: energy
+            text: f"{root.energy}"
+    BoxLayout:
+        Image:
+            source: "images/material_Icon.png"
+        Label:
+            id: materials
+            text: f"{root.materials}"
+    BoxLayout:
+        Image:
+            source: "images/physonium_Icon.png"
+
+        Label:
+            id: physonium
+            text: f"{root.physonium}"
+
+    Button:
+        id: try_to_colonize
+
+        size_hint: 0.8, 0.3
+        text: "Try to colonize!"
+        background_normal: ''
+        background_color: (1, 0.7, 0.2, 1)
+        bold: True
+        outline_color: (0, 0, 0)
+        outline_width: 2
+        on_press: root.ButtonClicked()
+        on_release: root.TryToColonize(1)
+
+
+
+WindowManager:
+    id: window_manager
+    MenuWindow:
+    MapOfPlanetsWindow:
+        id: MapOfPlanets_window
+    SettingsWindow:
+        id: settings
+    PlanetInfoWindow:
+        id: PlanetInfo
+
+<MenuWindow>
+    name: "Menu"
+    FloatLayout:
+        size: root.width, root.height * 0.66
+        Label:
+            text: "Team ABOBA presented:"
+            font_size: 60
+            pos_hint: {'center': (0.5, 0.9)}
+        Label:
+            text: "Star Sector 2.0"
+            font_size: 65
+            bold: True
+            pos_hint: {'center': (0.5, 0.83)}
+        Button:
+            text: "Play"
+
+            pos_hint: {'x': 0.40, 'y': 0.45}
+            size_hint: (0.2, 0.1)
+            on_press: root.ButtonClicked()
+            on_release:
+                app.root.current = "MapOfPlanets"
+                root.manager.transition.direction = "down"
+                app.time = 0
+
+            background_normal: ''
+            background_color: (1, 0.3, 0, 1)
+            bold: True
+            outline_color: (0, 0, 0)
+            outline_width: 2
+
+        Button:
+            text: "Settings"
+
+            pos_hint: {'x': 0.4, 'y': 0.33}
+            size_hint: (0.2, 0.1)
+            on_press: root.ButtonClicked()
+            on_release:
+                app.root.current = "Settings"
+                root.manager.transition.direction = "left"
+            background_normal: ''
+            background_color: (1, 0.7, 0.2, 1)
+            bold: True
+            outline_color: (0, 0, 0)
+            outline_width: 2
+
+        Button:
+            text: "Leave"
+            background_normal: ''
+            size_hint: (None, None)
+            width: 200
+            height: 100
+            background_color: (1, 0.7, 0.2, 1)
+
+
+# -------------------------------------------
+<Warning@Popup>
+    auto_dismiss: False
+    title: "The game will be ended. Are you sure?"
+    size_hint: 0.6, 0.2
+    pos_hint: {"x":0.2, "top": 0.7}
+    BoxLayout:
+        spacing: 20
+        padding: 20
+        Button:
+            text: "Cancel"
+            on_release: root.dismiss()
+            background_normal: ''
+            background_color: (1, 0.7, 0.2, 1)
+            bold: True
+            outline_color: (0, 0, 0)
+            outline_width: 2
+        Button:
+            text: "Leave"
+            background_normal: ''
+            background_color: (1, 0.7, 0.2, 1)
+            bold: True
+            outline_color: (0, 0, 0)
+            outline_width: 2
+            on_release:
+                app.root.current = "Menu"
+                root.dismiss()
+                # проблема в анимации и в звуке клика
+
+#----экран после старта----
+<Dynamics>:
+    Button: #кнопка, отправляющая на экран планеты.
+        size: 12, 12
+        pos: self.parent.pos
+        on_press: app.root.current = "PlanetInfo"
+    Image:
+        source: root.image_source
+        size: 15, 15
+        pos: self.parent.pos
+
+
+<MapOfPlanetsWindow>
+    name: "MapOfPlanets"
+
+    planet1: planet1
+    planet2: planet2
+    Image:
+        id: star
+        source: "images/human_Icon2.png"
+        size: 50, 50
+#        center_x: 0
+#        center_y: 0
+        pos: 0, 0
+
+    Dynamics:
+        velocity_x: 0.1
+        velocity_y: 0.1
+        id: planet1
+        size: 12, 12
+        pos: 200, 400
+        image_source: "images/planet_1_256_dark.png"
+        bt_source:
+    Dynamics:
+        id: planet2
+        size: 10, 10
+        pos: 300, 200
+        velocity_x: -0.34
+        image_source: "images/planet_2_256_dark.png"
+        bt_source:
+
+    Label:
+        id: clock
+        text: "Day:"
+        pos_hint: {'center': (0.95, 0.15)}
+
+    Button:
+        text: "Back"
+        on_press: root.ButtonClicked()
+        on_release: Factory.Warning().open()
+        size_hint: (0.15, 0.1)
+        background_normal: ''
+        background_color: (1, 0.7, 0.2, 1)
+        bold: True
+        outline_color: (0, 0, 0)
+        outline_width: 2
+
+
+
+
+
+<PlanetInfoWindow>
+    name: "PlanetInfo"
+    FloatLayout:
+        Planet:
+               name: "Game"
+            planet_1_colonize: planet_1
+            planet_2_colonize: planet_2
+            humans: humans_amount
+            food: food_amount
+            material: material_amount
+            energy: energy_amount
+            physonium: physonium_amount
+            resources_1: req_planet_1
+            resources_2: req_planet_2
+            food_speed: food_per_day
+            material_speed: material_per_day
+            energy_speed: energy_per_day
+            physonium_speed: physonium_per_day
+        BoxLayout:
+            orientation: "vertical"
+            size_hint: 0.33, 0.8
+            pos_hint: {'center': (0.45, 0.6)}
+
+            Label:
+                text: "Manufactures:"
+                #pos_hint: {'center': (0.45, 0.95)}
+
+            Slider:
+                id: food_manufacture
+                min: 0
+                max: showing_planet.humans
+                step: 1
+                #pos_hint: {'center': (0.45, 0.8)}
+                size_hint: (0.8, 0.1)
+
+                cursor_image: "images/human_Icon.png"
+            Label:
+                text: str(int(food_manufacture.value))
+                #pos_hint: {'center': (0.6, 0.8)}
+
+            Slider:
+                id: energy_manufacture
+                min: 0
+                max: showing_planet.humans - food_manufacture.value
+                step: 1
+                #pos_hint: {'center': (0.45, 0.7)}
+                size_hint: (0.2, 0.1)
+                cursor_image: "images/human_Icon.png"
+            Label:
+                text: str(int(energy_manufacture.value))
+                #pos_hint: {'center': (0.6, 0.7)}
+
+            Slider:
+                id: materials_manufacture
+                min: 0
+                max: showing_planet.humans - food_manufacture.value - energy_manufacture.value
+                step: 1
+                #pos_hint: {'center': (0.45, 0.6)}
+                size_hint: (0.2, 0.1)
+                cursor_image: "images/human_Icon.png"
+            Label:
+                text: str(int(materials_manufacture.value))
+               #pos_hint: {'center': (0.6, 0.6)}
+            Slider:
+                id: physonium_manufacture
+                min: 0
+                max: showing_planet.humans - food_manufacture.value - energy_manufacture.value - materials_manufacture.value
+                step: 1
+                #pos_hint: {'center': (0.45, 0.5)}
+                size_hint: (0.2, 0.1)
+                cursor_image: "images/human_Icon.png"
+
+            Label:
+                text: str(int(physonium_manufacture.value))
+                #pos_hint: {'center': (0.6, 0.5)}
+
+        Button:
+            text: "Back"
+
+            on_press: root.ButtonClicked()
+            on_release:
+                app.root.current = "MapOfPlanets"
+                root.manager.transition.direction = "up"
+
+            size_hint: (0.15, 0.1)
+            background_normal: ''
+            background_color: (1, 0.7, 0.2, 1)
+            bold: True
+            outline_color: (0, 0, 0)
+            outline_width: 2
+
+
+
+
+# ----------------------------------------------
+<SettingsWindow>
+    name: "Settings"
+    slide_main_volume: MainVolume
+    slide_music_volume: MusicVolume
+    BoxLayout:
+
+        orientation: "vertical"
+        size: root.width, root.height
+        Label:
+            text: "Settings:"
+            font_size: 60
+            bold: True
+
+        Label:
+            text: "Main Volume:"
+            font_size: 50
+        BoxLayout:
+            padding: 50
+            Slider:
+                min: 0
+                max: 100
+                step: 5
+                orientation: "horizontal"
+
+                on_value: root.ChangeMainVolume(*args)
+            Label:
+                id: MainVolume
+                text: "0"
+                font_size: 40
+
+        Label:
+            text: "Music Volume:"
+            font_size: 50
+        BoxLayout:
+            spacing: 20
+            padding: 50
+            Slider:
+                min: 0
+                max: 100
+                step: 5
+                orientation: "horizontal"
+                value: 0
+                on_value: root.ChangeMusicVolume(*args)
+            Label:
+                id: MusicVolume
+                text: "0"
+                font_size: 40
+
+        Button:
+            text: "Back"
+            on_press: root.ButtonClicked()
+            on_release:
+                app.root.current = "Menu"
+                root.manager.transition.direction = "right"
+
+            size_hint: (0.15, 0.5)
+
+            background_color: (1, 0.7, 0.2, 1)
+            background_normal: ''
